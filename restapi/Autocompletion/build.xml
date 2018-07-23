@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<project name="Autocompletion" basedir="." default="autocomplete">
+    <property name="src.dir" value="src"/>
+    <property name="name" value="Autocompletion"/>
+    <property name="appserver.home" value="../../apache-tomcat-7.0.90"/>
+   
+    <property name="web.dir" value="WebContent"/>
+    <property name="appserver.lib" value="${appserver.home}/lib"/>
+    <property name="appserver.deploy.path" value="${appserver.home}/webapps"/>
+     <property name="build.output.dir" value="${appserver.deploy.path}/${name}/WEB-INF/classes"/>
+    <property name="source" value="1.7"/>
+    <property name="target" value="1.7"/>
+    
+    <path id="master-classpath">
+        <fileset dir="${web.dir}/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${appserver.lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${build.dir}"/>
+    </path>
+
+    <target name="autocomplete" depends="deploy">
+        <echo message=""/>
+        <echo message="${name} build file ${build.output.dir}"/>
+        <echo message="-----------------------------------"/>
+        <echo message=""/>
+        <echo message="Available targets are:"/>
+        <echo message=""/>
+         <echo message="clean    --> Clean the application"/>
+        <echo message="build     --> Build the application"/>
+        <echo message="deploy    --> Deploy application as directory"/>
+       
+        <echo message=""/>
+    </target>
+
+    <target name="clean"  description="clean application">
+        <delete dir="${appserver.deploy.path}/${name}" />
+    </target>
+    
+    <target name="build" depends="clean" description="Compile main source tree java files">
+       <echo message="builiding wenasda" />
+        <mkdir dir="${build.output.dir}"/>
+        <javac destdir="${build.output.dir}" source="${source}" target="${target}" debug="true"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="${src.dir}"/>
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
+
+    <target name="deploy" depends="build" description="Deploy application">
+        <copy todir="${appserver.deploy.path}/${name}" preservelastmodified="true">
+            <fileset dir="${web.dir}">
+                <include name="**/*.*"/>
+            </fileset>
+        </copy>
+    </target>
+
+</project>
